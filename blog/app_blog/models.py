@@ -18,7 +18,7 @@ class Post(models.Model):
     contenido = HTMLField()
     descripcion = models.CharField(max_length=255)
     creacion = models.DateTimeField(auto_now_add=True)
-    actualizacion = models.DateTimeField(auto_created=True)
+    actualizacion = models.DateTimeField(auto_now_add=True)
     categorias = models.ManyToManyField(Category, through='PostCategory')
     estado = models.CharField(
         max_length=20,
