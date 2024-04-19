@@ -9,3 +9,6 @@ class Comment(models.Model):
     actualizacion = models.DateTimeField(auto_created=True)
     articulo = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     contador_likes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.articulo}({self.autor})"
