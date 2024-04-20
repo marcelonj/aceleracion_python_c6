@@ -2,6 +2,12 @@ from django.contrib import admin
 from app_blog.models import *
 
 
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ("user", "fecha_nac", "bio", "github")
+    exclude = ("fecha_nac", "bio", "github")
+
+
 # Formulario relacionado por Clave Foránea
 class CommentInline(admin.TabularInline):
     model = Comment

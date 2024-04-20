@@ -2,11 +2,12 @@ from django.db import models
 from tinymce.models import HTMLField
 from django.utils.text import slugify
 from .category_model import Category
+from .custom_user_model import CustomUser
 
 
 class Post(models.Model):
     titulo = models.CharField(max_length=50)
-    autor = models.CharField(max_length=30)
+    autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     contenido = HTMLField()
     descripcion = models.CharField(max_length=255)
     creacion = models.DateTimeField(auto_now_add=True)
