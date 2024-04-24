@@ -1,25 +1,25 @@
 {% extends 'base.html' %} {% load static %}
 {% block content %}
-<h1>Bienvenidos al blog Aceleración</h1>
-<p>Descubre los mejores post sobre el mundo de la programación</p>
-<p>
-    {% for articulo in articulos_recientes %}
-        <div class="course-card">
-            <a href="#">
-                <img
-                    width="30%"
-                    height="auto"
-                    src="media/{{ articulo.imagen }}"
-                    alt="{{ articulo.titulo }}"
-                />
-            </a>
-            <h3>{{ articulo.titulo }}</h3>
-            <p>{{ articulo.descripcion|truncatechars:100 }}</p>
-        </div>
-        {% empty %}
-        <p>Todavía no hay publicaciones</p>
+<main>
+    <div class="container text-center">
+        <h1>Bienvenidos al blog Aceleración</h1>
+        <p>Descubre los mejores post sobre el mundo de la programación</p>
+    </div>
+    <div class="row">
+        {% for articulo in articulos_recientes %}
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="media/{{ articulo.imagen }}" alt="{{ articulo.titulo }}"/>
+                    <div class="card-body">
+                        <h3>{{ articulo.titulo }}</h3>
+                        <p>{{ articulo.descripcion|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>Todavía no hay publicaciones</p>
         {% endfor %}
-
-</p>
+    </div>
+</main>
 
 {% endblock %}
