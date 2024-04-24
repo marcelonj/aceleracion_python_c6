@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+<h1>Bienvenidos al blog Aceleración</h1>
+<p>Descubre los mejores post sobre el mundo de la programación</p>
+<p>
+    {% for articulo in articulos_recientes %}
+        <div class="course-card">
+            <a href="#">
+                <img
+                    width="30%"
+                    height="auto"
+                    src="media/{{ articulo.imagen }}"
+                    alt="{{ articulo.titulo }}"
+                />
+            </a>
+            <h3>{{ articulo.titulo }}</h3>
+            <p>{{ articulo.descripcion|truncatechars:100 }}</p>
+        </div>
+        {% empty %}
+        <p>Todavía no hay publicaciones</p>
+        {% endfor %}
+
+</p>
+
+{% endblock %}
