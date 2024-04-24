@@ -8,3 +8,6 @@ class CustomUser(models.Model):
     fecha_nac = models.DateField(null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     github = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

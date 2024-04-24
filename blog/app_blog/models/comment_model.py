@@ -4,7 +4,6 @@ from .custom_user_model import CustomUser
 
 
 class Comment(models.Model):
-    autor = models.CharField(max_length=30)
     autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     contenido = models.TextField()
     creacion = models.DateTimeField(auto_now_add=True)

@@ -28,7 +28,7 @@ class Post(models.Model):
         upload_to="app_blog", default="app_blog/default.png", blank=True
     )
     contador_comentarios = models.IntegerField(default=0)
-    contador_visualizaciones = models.IntegerField
+    contador_visualizaciones = models.IntegerField(default=0)
     contador_likes = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
