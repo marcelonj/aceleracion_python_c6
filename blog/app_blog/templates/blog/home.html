@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% load static %}
+{% block content %}
+<main>
+    <div class="container text-center mt-4">
+        <h1>Bienvenidos al blog Aceleración</h1>
+        <p>Descubre los mejores post sobre el mundo de la programación</p>
+    </div>
+    <h2 class="fs-3 text-center my-4">Articulos recientes</h2>
+    <div class="row">
+        {% for articulo in articulos_recientes %}
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="media/{{ articulo.imagen }}" alt="{{ articulo.titulo }}"/>
+                    <div class="card-body">
+                        <h3>{{ articulo.titulo }}</h3>
+                        <p>{{ articulo.descripcion|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>Todavía no hay publicaciones</p>
+        {% endfor %}
+    </div>
+</main>
+
+{% endblock %}
