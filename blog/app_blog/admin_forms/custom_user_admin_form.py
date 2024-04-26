@@ -25,9 +25,20 @@ class CustomUserAdminForm(forms.ModelForm):
             self.fields["first_name"].initial = self.instance.user.first_name
             self.fields["last_name"].initial = self.instance.user.last_name
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if username and User.objects.filter(username=username).exists():
+            if not (self.instance.pk and self.instance.user.username == username):
+                raise forms.ValidationError("El nombre de usuario ya existe")
+        return username
+
+    def clean(self):
+        # Si necesitas realizar validaciones que involucren múltiples campos, hazlo aquí
+        cleaned_data = super().clean()
+        return cleaned_data
+
     def save(self, commit=True):
         custom_user = super(CustomUserAdminForm, self).save(commit=False)
-
         # Datos del modelo User en el formulario
         username = self.cleaned_data["username"]
         email = self.cleaned_data["email"]
@@ -40,7 +51,7 @@ class CustomUserAdminForm(forms.ModelForm):
 
             if user.username != username:
                 # Comprobar si el nuevo nombre de usuario ya existe
-                if User.objects.filter(username=username).exists():
+                if User.objects.filter(username=username).exclude(pk=user.pk).exists():
                     self.add_error("username", "El nombre de usuario ya existe")
                     return None
                 else:
