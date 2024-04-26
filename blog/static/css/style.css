@@ -5,3 +5,12 @@ footer {
 main {
     min-height: 85vh;
 }
+
+a {
+    text-decoration: none;
+}
+
+.img-3-4{
+    aspect-ratio: 4/3;
+    border-radius: 2% 2% 0 0;
+}

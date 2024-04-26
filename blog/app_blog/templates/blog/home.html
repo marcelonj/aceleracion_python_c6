@@ -9,13 +9,29 @@
     <div class="row">
         {% for articulo in articulos_recientes %}
             <div class="col-4">
-                <div class="card" style="width: 18rem;">
-                    <img src="media/{{ articulo.imagen }}" alt="{{ articulo.titulo }}"/>
+                <a href="/post/{{articulo.slug}}" class="card" style="width: 18rem;">
+                    <img class="img-3-4" src="media/{{ articulo.imagen }}" alt="{{ articulo.titulo }}"/>
                     <div class="card-body">
                         <h3>{{ articulo.titulo }}</h3>
                         <p>{{ articulo.descripcion|truncatechars:100 }}</p>
                     </div>
-                </div>
+                </a>
+            </div>
+            {% empty %}
+            <p>Todavía no hay publicaciones</p>
+        {% endfor %}
+    </div>
+    <h2 class="fs-3 text-center my-4">Articulos más vistos</h2>
+    <div class="row">
+        {% for articulo in articulos_mas_vistos %}
+            <div class="col-4">
+                <a href="/post/{{articulo.slug}}" class="card" style="width: 18rem;">
+                    <img class="img-3-4" src="media/{{ articulo.imagen }}" alt="{{ articulo.titulo }}"/>
+                    <div class="card-body">
+                        <h3>{{ articulo.titulo }}</h3>
+                        <p>{{ articulo.descripcion|truncatechars:100 }}</p>
+                    </div>
+                </a>
             </div>
             {% empty %}
             <p>Todavía no hay publicaciones</p>
