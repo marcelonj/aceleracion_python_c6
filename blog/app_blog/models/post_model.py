@@ -8,7 +8,7 @@ from .custom_user_model import CustomUser
 class Post(models.Model):
     titulo = models.CharField(max_length=50)
     autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    contenido = HTMLField()
+    contenido = HTMLField(default="")
     descripcion = models.CharField(max_length=255)
     creacion = models.DateTimeField(auto_now_add=True)
     actualizacion = models.DateTimeField(auto_now_add=True)
