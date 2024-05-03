@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %} {{post.titulo}} {% endblock %}
+{% block content %}
+    <main>
+        <h1 class="text-center pt-3">{{post.titulo}}</h1>
+        <article class="py-3">
+            {{post.contenido|safe}}
+        </article>
+        <h2 class="fs-5">Autor: {{post.autor.user}}</h2>
+    </main>    
+{% endblock %}
