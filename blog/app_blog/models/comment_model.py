@@ -7,7 +7,7 @@ class Comment(models.Model):
     autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     contenido = models.TextField()
     creacion = models.DateTimeField(auto_now_add=True)
-    actualizacion = models.DateTimeField(auto_created=True)
+    actualizacion = models.DateTimeField(auto_now_add=True)
     articulo = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     contador_likes = models.IntegerField(default=0)
 
