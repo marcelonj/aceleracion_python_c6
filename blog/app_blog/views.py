@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Post
+from .models import Post, CustomUser
 from django.contrib.auth.decorators import login_required
+from .forms import NuevoPostForm
 
 # Dependencias para iniciar y cerrar sesión
 from django.http import HttpResponseRedirect
@@ -12,7 +13,6 @@ from django.db.models import Q
 from .models import Post
 
 
-@login_required
 def home(request):
     num_articulos = Post.objects.filter(estado="publicado").count()
     articulos_recientes = Post.objects.filter(estado="publicado").order_by("creacion")[
@@ -58,8 +58,6 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
 
-
-@login_required
 def search_view(request):
     query = request.GET.get("query", "")
     if query:
@@ -77,3 +75,24 @@ def search_view(request):
         "blog/search_results.html",
         {"articulos_filtrados": posts, "query": query},
     )
+
+@login_required
+def create_post(request):
+    if request.method == "POST":
+        form = NuevoPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.autor = CustomUser.objects.get(user=request.user)
+            post.save()
+            return redirect("home")
+    else:  # Método GET
+        form = NuevoPostForm()
+
+    context = {"titulo": "Nuevo Post", "form": form, "submit": "Crear Post"}
+    return render(request, "blog/create_form.html", context)
+
+def view_post(request, post_slug):
+    context = {
+        "post": Post.objects.get(slug=post_slug),
+    }
+    return render(request, "blog/view_post.html", context=context)

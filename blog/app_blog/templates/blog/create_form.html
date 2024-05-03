@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+Nuevo Curso
+{% endblock %}
+
+{% block content %}
+    <h1>{{ titulo }}</h1>
+    <form method="post" enctype="multipart/form-data" class="">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit" class="btn btn-success">{{ submit }}</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Regresar</a>
+    </form>
+{% endblock %}
