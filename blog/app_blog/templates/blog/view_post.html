@@ -7,5 +7,27 @@
             {{post.contenido|safe}}
         </article>
         <h2 class="fs-5">Autor: {{post.autor.user}}</h2>
-    </main>    
+    </main>
+    <h3>Comentarios</h3>
+    <div class="comentarios">
+        {% for comentario in comentarios %}
+            <div>
+                <p>{{comentario.contenido|safe}}</p>
+                <p>Autor: {{comentario.autor.user}}</p>
+            </div>
+            {% empty %}
+            <p>Todavía no hay comentarios</p>
+        {% endfor %}
+    </div> 
+    {% if request.user.is_authenticated %}
+        <form method="post" enctype="multipart/form-data" class="">
+            {% csrf_token %} {{ form.as_p }}
+            <button type="submit" class="btn btn-success">{{ submit }}</button>
+        </form>
+        {% else %}
+        <p>Debes iniciar sesión para dejar un comentario</p>
+    {% endif %}    
+        
+            
+           
 {% endblock %}

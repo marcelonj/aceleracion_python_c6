@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Post, CustomUser
+from .models import Post, CustomUser, Comment
 from django.contrib.auth.decorators import login_required
-from .forms import NuevoPostForm
+from .forms import NuevoPostForm, CommentForm
 
 # Dependencias para iniciar y cerrar sesión
 from django.http import HttpResponseRedirect
@@ -92,7 +92,23 @@ def create_post(request):
     return render(request, "blog/create_form.html", context)
 
 def view_post(request, post_slug):
+    post = Post.objects.get(slug=post_slug)
+    if request.method == "POST":
+        form = CommentForm(request.POST, request.FILES)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.autor = CustomUser.objects.get(user=request.user)
+            comment.articulo = post
+            comment.save()
+            return redirect("home")
+    else:  # Método GET
+        form = CommentForm()
+    comentarios = Comment.objects.filter(articulo=post)
+
     context = {
-        "post": Post.objects.get(slug=post_slug),
+        "post": post,
+        "form": form,
+        "comentarios": comentarios,
+        "submit": "Publicar comentario",
     }
     return render(request, "blog/view_post.html", context=context)
