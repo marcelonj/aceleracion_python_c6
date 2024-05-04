@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Post, CustomUser, Comment
 from django.contrib.auth.decorators import login_required
 from .forms import NuevoPostForm, CommentForm
+from django.shortcuts import get_object_or_404
 
 # Dependencias para iniciar y cerrar sesión
 from django.http import HttpResponseRedirect
@@ -93,6 +94,8 @@ def create_post(request):
 
 def view_post(request, post_slug):
     post = Post.objects.get(slug=post_slug)
+    post.contador_visualizaciones += 1
+    post.save()
     if request.method == "POST":
         form = CommentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -100,7 +103,9 @@ def view_post(request, post_slug):
             comment.autor = CustomUser.objects.get(user=request.user)
             comment.articulo = post
             comment.save()
-            return redirect("home")
+            post.contador_comentarios += 1
+            post.save()
+            return redirect(view_post, post_slug=post_slug)
     else:  # Método GET
         form = CommentForm()
     comentarios = Comment.objects.filter(articulo=post)
@@ -112,3 +117,15 @@ def view_post(request, post_slug):
         "submit": "Publicar comentario",
     }
     return render(request, "blog/view_post.html", context=context)
+
+def like_post(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+    post.contador_likes += 1
+    post.save()
+    return redirect(view_post, post_slug=post_slug)
+
+def like_comentario(request, id, post_slug):
+    comment = get_object_or_404(Comment, id=id)
+    comment.contador_likes += 1
+    comment.save()
+    return redirect(view_post, post_slug=post_slug)

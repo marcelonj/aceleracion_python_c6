@@ -8,4 +8,6 @@ urlpatterns = [
     path("search/", search_view, name="search_view"),
     path("create/", create_post, name="create_post"),
     path("post/<slug:post_slug>", view_post, name="view_post"),
+    path("like_post/<slug:post_slug>", like_post, name="like_post"),
+    path("like_comentario/<int:id><slug:post_slug>", like_comentario, name="like_comentario"),
 ]

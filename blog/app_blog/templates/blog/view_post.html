@@ -6,14 +6,28 @@
         <article class="py-3">
             {{post.contenido|safe}}
         </article>
-        <h2 class="fs-5">Autor: {{post.autor.user}}</h2>
+        <div class="d-flex flex-row">
+            <h2 class="fs-5">Autor: {{post.autor.user}}    |    Visto {{post.contador_visualizaciones}} veces</h2>
+            <form action="{% url 'like_post' post.slug %}">
+                <button type="submit" class="boton-simple"><i class="bi bi-heart fs-5 ps-3" style="color: red;"></i></button>
+            </form>
+            
+            <h2 class="fs-5 ms-1">{{post.contador_likes}}</h2>                
+        </div>
     </main>
-    <h3>Comentarios</h3>
+    <h3>Comentarios ({{post.contador_comentarios}} comentarios)</h3>
     <div class="comentarios">
         {% for comentario in comentarios %}
-            <div>
-                <p>{{comentario.contenido|safe}}</p>
-                <p>Autor: {{comentario.autor.user}}</p>
+            <div class="comentario">
+                <p class="fuente-informacion">{{comentario.autor.user}}</p>
+                <p class="fuente-informacion">Fecha publicación: {{comentario.creacion}}</p>
+                {{comentario.contenido|safe}}
+                <div class="d-flex flex-row">
+                    <form action="{% url 'like_comentario' comentario.id post.slug %}">
+                        <button type="submit" class="boton-simple"><i class="bi bi-heart fs-5 ps-3" style="color: red;"></i></button>
+                    </form>
+                    <h2 class="fs-5 ms-1">{{comentario.contador_likes}}</h2>                
+                </div>
             </div>
             {% empty %}
             <p>Todavía no hay comentarios</p>
@@ -26,8 +40,5 @@
         </form>
         {% else %}
         <p>Debes iniciar sesión para dejar un comentario</p>
-    {% endif %}    
-        
-            
-           
+    {% endif %}
 {% endblock %}
