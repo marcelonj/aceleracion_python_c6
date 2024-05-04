@@ -92,6 +92,13 @@ def create_post(request):
     context = {"titulo": "Nuevo Post", "form": form, "submit": "Crear Post"}
     return render(request, "blog/create_form.html", context)
 
+def post_list(request):
+    posts = Post.objects.all()
+    context = {
+        "posts": posts,
+    }
+    return render(request, "blog/post_list.html", context=context)
+
 def view_post(request, post_slug):
     post = Post.objects.get(slug=post_slug)
     post.contador_visualizaciones += 1
