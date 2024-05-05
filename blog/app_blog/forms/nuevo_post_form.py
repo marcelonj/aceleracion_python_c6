@@ -3,11 +3,11 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 class NuevoPostForm(forms.ModelForm):
-    categoria = forms.ModelChoiceField(
+    categorias = forms.ModelMultipleChoiceField(
+        label="Categorías",
         queryset=Category.objects.all(),
         required=False,
-        empty_label="Seleccione la categoría",
-        widget=forms.Select(attrs={"class": "form-control"}),
+        widget=forms.CheckboxSelectMultiple(),
     )
     class Meta:
         model = Post
@@ -15,6 +15,7 @@ class NuevoPostForm(forms.ModelForm):
             "titulo",
             "contenido",
             "descripcion",
+            "categorias",
             "estado",
             "imagen",
         ]

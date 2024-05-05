@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, CustomUser, Comment
 from django.contrib.auth.decorators import login_required
-from .forms import NuevoPostForm, CommentForm
+from .forms import NuevoPostForm, CommentForm, NuevoUsuarioForm
 from django.shortcuts import get_object_or_404
 
 # Dependencias para iniciar y cerrar sesión
@@ -16,12 +16,12 @@ from .models import Post
 
 def home(request):
     num_articulos = Post.objects.filter(estado="publicado").count()
-    articulos_recientes = Post.objects.filter(estado="publicado").order_by("creacion")[
+    articulos_recientes = Post.objects.filter(estado="publicado").order_by("creacion").reverse()[
         :3
     ]
     articulos_mas_vistos = Post.objects.filter(estado="publicado").order_by(
         "contador_visualizaciones"
-    )[:3]
+    ).reverse()[:3]
 
     context = {
         "num_articulos": num_articulos,
@@ -84,6 +84,7 @@ def create_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.autor = CustomUser.objects.get(user=request.user)
+            print(request.POST.get("categoria"))
             post.save()
             return redirect("home")
     else:  # Método GET
@@ -136,3 +137,19 @@ def like_comentario(request, id, post_slug):
     comment.contador_likes += 1
     comment.save()
     return redirect(view_post, post_slug=post_slug)
+
+def crer_cuenta(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("home"))
+    if request.method == "POST":
+        form = NuevoUsuarioForm(request.POST, request.FILES)
+        user = form.save(commit=False)
+        custom_user = CustomUser(user=user)
+        user.save()
+        custom_user.save()
+        return redirect("login")
+    else:  # método GET
+        form = NuevoUsuarioForm()
+
+    
+    return render(request, "blog/create_account.html", context={"form": form})
