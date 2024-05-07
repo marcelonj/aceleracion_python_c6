@@ -1,6 +1,8 @@
+from typing import Any
 from ..models import Post, Category
 from django import forms
 from tinymce.widgets import TinyMCE
+
 
 class NuevoPostForm(forms.ModelForm):
     categorias = forms.ModelMultipleChoiceField(
@@ -9,6 +11,7 @@ class NuevoPostForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )
+
     class Meta:
         model = Post
         fields = [
@@ -30,14 +33,14 @@ class NuevoPostForm(forms.ModelForm):
             "titulo": forms.TextInput(
                 attrs={
                     "placeholder": "Ingrese titulo del post",
-                    "class": "form-control"
+                    "class": "form-control",
                 }
             ),
             "contenido": TinyMCE(),
             "descripcion": forms.TextInput(
                 attrs={
                     "placeholder": "Ingrese la descripción corta",
-                    "class": "form-control"
+                    "class": "form-control",
                 }
             ),
             "estado": forms.Select(attrs={"class": "form-control"}),

@@ -11,17 +11,19 @@ from django.contrib.auth import authenticate, login, logout
 
 # Dependencias para consultas complejas
 from django.db.models import Q
-from .models import Post
+from .models import Post, PostCategory, Category
 
 
 def home(request):
     num_articulos = Post.objects.filter(estado="publicado").count()
-    articulos_recientes = Post.objects.filter(estado="publicado").order_by("creacion").reverse()[
-        :3
-    ]
-    articulos_mas_vistos = Post.objects.filter(estado="publicado").order_by(
-        "contador_visualizaciones"
-    ).reverse()[:3]
+    articulos_recientes = (
+        Post.objects.filter(estado="publicado").order_by("creacion").reverse()[:3]
+    )
+    articulos_mas_vistos = (
+        Post.objects.filter(estado="publicado")
+        .order_by("contador_visualizaciones")
+        .reverse()[:3]
+    )
 
     context = {
         "num_articulos": num_articulos,
@@ -59,6 +61,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
 
+
 def search_view(request):
     query = request.GET.get("query", "")
     if query:
@@ -77,6 +80,7 @@ def search_view(request):
         {"articulos_filtrados": posts, "query": query},
     )
 
+
 @login_required
 def create_post(request):
     if request.method == "POST":
@@ -84,8 +88,8 @@ def create_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.autor = CustomUser.objects.get(user=request.user)
-            print(request.POST.get("categoria"))
             post.save()
+            form.save_m2m()
             return redirect("home")
     else:  # Método GET
         form = NuevoPostForm()
@@ -93,12 +97,14 @@ def create_post(request):
     context = {"titulo": "Nuevo Post", "form": form, "submit": "Crear Post"}
     return render(request, "blog/create_form.html", context)
 
+
 def post_list(request):
     posts = Post.objects.all()
     context = {
         "posts": posts,
     }
     return render(request, "blog/post_list.html", context=context)
+
 
 def view_post(request, post_slug):
     post = Post.objects.get(slug=post_slug)
@@ -126,17 +132,20 @@ def view_post(request, post_slug):
     }
     return render(request, "blog/view_post.html", context=context)
 
+
 def like_post(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
     post.contador_likes += 1
     post.save()
     return redirect(view_post, post_slug=post_slug)
 
+
 def like_comentario(request, id, post_slug):
     comment = get_object_or_404(Comment, id=id)
     comment.contador_likes += 1
     comment.save()
     return redirect(view_post, post_slug=post_slug)
+
 
 def crer_cuenta(request):
     if request.user.is_authenticated:
@@ -151,5 +160,4 @@ def crer_cuenta(request):
     else:  # método GET
         form = NuevoUsuarioForm()
 
-    
     return render(request, "blog/create_account.html", context={"form": form})
