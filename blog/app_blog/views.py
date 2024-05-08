@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, CustomUser, Comment
 from django.contrib.auth.decorators import login_required
-from .forms import NuevoPostForm, CommentForm
+from .forms import NuevoPostForm, CommentForm, NuevoUsuarioForm, NuevaCategoriaForm
 from django.shortcuts import get_object_or_404
 
 # Dependencias para iniciar y cerrar sesión
@@ -11,17 +11,19 @@ from django.contrib.auth import authenticate, login, logout
 
 # Dependencias para consultas complejas
 from django.db.models import Q
-from .models import Post
+from .models import Post, PostCategory, Category
 
 
 def home(request):
     num_articulos = Post.objects.filter(estado="publicado").count()
-    articulos_recientes = Post.objects.filter(estado="publicado").order_by("creacion")[
-        :3
-    ]
-    articulos_mas_vistos = Post.objects.filter(estado="publicado").order_by(
-        "contador_visualizaciones"
-    )[:3]
+    articulos_recientes = (
+        Post.objects.filter(estado="publicado").order_by("creacion").reverse()[:3]
+    )
+    articulos_mas_vistos = (
+        Post.objects.filter(estado="publicado")
+        .order_by("contador_visualizaciones")
+        .reverse()[:3]
+    )
 
     context = {
         "num_articulos": num_articulos,
@@ -59,6 +61,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
 
+
 def search_view(request):
     query = request.GET.get("query", "")
     if query:
@@ -73,9 +76,10 @@ def search_view(request):
 
     return render(
         request,
-        "blog/search_results.html",
-        {"articulos_filtrados": posts, "query": query},
+        "blog/post_list.html",
+        {"posts": posts, "query": query, "titulo": "Resultados de la busqueda"},
     )
+
 
 @login_required
 def create_post(request):
@@ -85,6 +89,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.autor = CustomUser.objects.get(user=request.user)
             post.save()
+            form.save_m2m()
             return redirect("home")
     else:  # Método GET
         form = NuevoPostForm()
@@ -92,12 +97,15 @@ def create_post(request):
     context = {"titulo": "Nuevo Post", "form": form, "submit": "Crear Post"}
     return render(request, "blog/create_form.html", context)
 
+
 def post_list(request):
     posts = Post.objects.all()
     context = {
         "posts": posts,
+        "titulo": "Posts",
     }
     return render(request, "blog/post_list.html", context=context)
+
 
 def view_post(request, post_slug):
     post = Post.objects.get(slug=post_slug)
@@ -125,14 +133,59 @@ def view_post(request, post_slug):
     }
     return render(request, "blog/view_post.html", context=context)
 
+
 def like_post(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
     post.contador_likes += 1
     post.save()
     return redirect(view_post, post_slug=post_slug)
 
+
 def like_comentario(request, id, post_slug):
     comment = get_object_or_404(Comment, id=id)
     comment.contador_likes += 1
     comment.save()
     return redirect(view_post, post_slug=post_slug)
+
+
+def crer_cuenta(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("home"))
+    if request.method == "POST":
+        form = NuevoUsuarioForm(request.POST, request.FILES)
+        user = form.save(commit=False)
+        custom_user = CustomUser(user=user)
+        user.save()
+        custom_user.save()
+        return redirect("login")
+    else:  # método GET
+        form = NuevoUsuarioForm()
+
+    return render(request, "blog/create_account.html", context={"form": form})
+
+def ver_categoria(request, category_slug):
+    categoria = get_object_or_404(Category, slug=category_slug)
+    posts = Post.objects.filter(categorias = categoria)
+    context = {
+        "posts": posts, 
+        "titulo": categoria.nombre,
+    }
+    return render(request, "blog/post_list.html", context=context)
+
+def categories_list(request):
+    categorias = Category.objects.all()
+    context = {
+        "categorias": categorias,
+    }
+    return render(request, "blog/lista_categorias.html", context=context)
+
+@login_required
+def crear_categoria(request):
+    if request.method == "POST":
+        form = NuevaCategoriaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_categorias")
+    else:
+        form = NuevaCategoriaForm()
+    return render(request, "blog/nueva_categoria.html", context={"form":form})

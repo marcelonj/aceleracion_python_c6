@@ -27,7 +27,7 @@
                 <a class="nav-link" href="{% url 'post_list' %}">Publicaciones</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Catrgorias</a>
+                <a class="nav-link" href="{% url 'lista_categorias' %}">Catrgorias</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'create_post' %}">Crear artículo</a>
@@ -37,6 +37,8 @@
                   <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
                 {% else %}
                   <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+                  </li>
+                    <a class="nav-link" href="{% url 'crear_cuenta' %}">Crear cuenta</a>
                 {% endif %}
               </li>
             </ul>
