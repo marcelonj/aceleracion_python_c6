@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %} Categorías {% endblock %}
+{% block content %}
+    {% for categoria in categorias %}
+    <a href="{% url 'ver_categoria' categoria.slug %}">
+        <div class="card-horizontal" style="background-color: {{categoria.color}};">
+            <h2>{{categoria.nombre}}</h2>
+            <p>{{categoria.descripcion}}</p>
+        </div>
+    </a>
+        {% empty %}
+        <p>No hay categorías para mostrar</p>
+    {% endfor %}
+    {% if request.user.is_authenticated %}
+        <button type="button" class="btn btn-info mt-3">
+            <a href="{% url 'crear_categoria' %}">Crear nueva categoría</a>
+        </button>
+    {% endif %}
+{% endblock %}

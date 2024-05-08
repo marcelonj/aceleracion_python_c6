@@ -12,4 +12,7 @@ urlpatterns = [
     path("like_post/<slug:post_slug>", like_post, name="like_post"),
     path("like_comentario/<int:id><slug:post_slug>", like_comentario, name="like_comentario"),
     path("crear_cuenta/", crer_cuenta, name="crear_cuenta"),
+    path("categories/", categories_list, name="lista_categorias"),
+    path("category/<slug:category_slug>", ver_categoria, name="ver_categoria"),
+    path("new_category", crear_categoria, name="crear_categoria")
 ]

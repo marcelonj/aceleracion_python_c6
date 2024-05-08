@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, CustomUser, Comment
 from django.contrib.auth.decorators import login_required
-from .forms import NuevoPostForm, CommentForm, NuevoUsuarioForm
+from .forms import NuevoPostForm, CommentForm, NuevoUsuarioForm, NuevaCategoriaForm
 from django.shortcuts import get_object_or_404
 
 # Dependencias para iniciar y cerrar sesión
@@ -76,8 +76,8 @@ def search_view(request):
 
     return render(
         request,
-        "blog/search_results.html",
-        {"articulos_filtrados": posts, "query": query},
+        "blog/post_list.html",
+        {"posts": posts, "query": query, "titulo": "Resultados de la busqueda"},
     )
 
 
@@ -102,6 +102,7 @@ def post_list(request):
     posts = Post.objects.all()
     context = {
         "posts": posts,
+        "titulo": "Posts",
     }
     return render(request, "blog/post_list.html", context=context)
 
@@ -161,3 +162,30 @@ def crer_cuenta(request):
         form = NuevoUsuarioForm()
 
     return render(request, "blog/create_account.html", context={"form": form})
+
+def ver_categoria(request, category_slug):
+    categoria = get_object_or_404(Category, slug=category_slug)
+    posts = Post.objects.filter(categorias = categoria)
+    context = {
+        "posts": posts, 
+        "titulo": categoria.nombre,
+    }
+    return render(request, "blog/post_list.html", context=context)
+
+def categories_list(request):
+    categorias = Category.objects.all()
+    context = {
+        "categorias": categorias,
+    }
+    return render(request, "blog/lista_categorias.html", context=context)
+
+@login_required
+def crear_categoria(request):
+    if request.method == "POST":
+        form = NuevaCategoriaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("lista_categorias")
+    else:
+        form = NuevaCategoriaForm()
+    return render(request, "blog/nueva_categoria.html", context={"form":form})
