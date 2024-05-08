@@ -79,4 +79,22 @@ También desarrolle las clases necesarias para poder acceder a la administració
 
 **Tercera etapa**
 
-Creación de vistas
+En esta etapa se crearon las vistas para las distintas páginas con las que iba a contar finalmente el blog.
+Se tomó como estructura base la detallada en los requerimientos del proyecto que ya se mencionaron anteriormente.
+
+**Cuarta etapa**
+
+Se desarrolló el modelo para manejar usuarios customizados, y si bien no se llego a dearrollar totalmente su potencial por cuestiones de tiempo, se puede aprovechar la implementación de los mismos en un futuro si es que se desea seguir mejorando el proyecto.
+
+**Etapa final**
+
+Finalmente se agregaron los formularios necesarios para darle dinamismo e interacción al blog.
+
+En esta etapa también se condicionaron las vistas y templates necesarias para restringir algunas características solo a usuarios logueados.
+Por esta ultima característica, se agregó tambien una opcíon de crar usuarios e iniciar sesión.
+
+### Equipo de desarrollo
+- Marcelo Jurado
+
+### Tutor
+- Luis Parada
